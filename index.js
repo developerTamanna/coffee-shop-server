@@ -83,8 +83,13 @@ app.put('/coffees/:id', async(req, res)=>{
 
 
    //user related APIs
+   //get
 
-   
+   app.get('/users', async (req, res)=>{
+    const result = await usersCollection.find().toArray();
+    res.send(result)
+   })
+   //post
  app.post('/users', async(req, res)=>{
   const userProfile = req.body;
   console.log(userProfile)
@@ -93,6 +98,33 @@ app.put('/coffees/:id', async(req, res)=>{
  })
 
 
+ //user email to data
+
+ app.patch('/users', async(req, res)=>{
+  // console.log(req.body)
+  const {email,lastSignInTime} = req.body;
+  const filter = {email: email}
+  const updatedDoc = {
+    $set: {
+      lastSignInTime: lastSignInTime
+   }
+  }
+  const  result = await usersCollection.updateOne(filter, updatedDoc);
+  res.send(result)
+ })
+
+
+
+
+
+//users delete func
+  
+app.delete('/users/:id', async (req, res)=>{
+  const id = req.params.id;
+  const query = {_id: new ObjectId(id)}
+  const result = await  usersCollection.deleteOne(query);
+  res.send(result);
+})
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
